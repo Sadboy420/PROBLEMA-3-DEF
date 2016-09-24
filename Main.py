@@ -17,17 +17,34 @@ lkncom2=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
 ppl1=[0,0,0,0,0,0,0,0,0,0,0,0]
 ppl2=[0,0,0,0,0,0,0,0,0,0,0,0]
 
+g = Graph()
+
+g.add_vertex("A mano")
+g.add_vertex("3er tiempo")
+
 
 for post in data1:
+    nombre = str(data1.index(post))
     if post["created_time"]>date:
-        for likes in post.items()[2]: #aca accede directamente a los likes
-        print likes
+        g.add_vertex(nombre)
+        g.add_edge("A mano",nombre)
+        for likes in post["likes"]: #aca accede directamente a los likes
+
+        for comments in post["comments"]:
+    else:
+        pass
     
 for post in data2:
+    nombre = str(data2.index(post))
     if post["created_time"]>date:
-        
+        g.add_vertex(nombre)
+        g.add_edge("3er tiempo",nombre)
+        for likes in post["likes"]:
 
+    else:
+        pass
 
+# por cada post hay un key de ["likes"] y ["comments"]
 
 
 
