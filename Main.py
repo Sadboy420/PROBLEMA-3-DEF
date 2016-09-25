@@ -1,31 +1,71 @@
 from json import loads
-##from igraph import *
+from igraph import *
 
-with open('beef house.json') as of:
+with open('beef house.json') as of: #se abren los archivos .json de ambas paginas
     data1 = loads(of.readline( ))
 
 with open('fellini.json') as of:
     data2 = loads(of.readline( ))
 
 
-##date=2015-09-20T00:00:00+0000 #fecha de restriccion(20-09-2015) a las 00:00
+date="2015-10-01T00:00:00+0000" #fecha de restriccion(20-09-2015) a las 00:00
+year=2015
+mes=9
 
-lista1=list()
-lista2=list()
-c=0
+posts1=[0,0,0,0,0,0,0,0,0,0,0,0]  #listas que contendran el numero de post al mes
+posts2=[0,0,0,0,0,0,0,0,0,0,0,0]   #check
+
+#lista de listas que tendra los datos likes y coments por cada mes
+lkncom1=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
+lkncom2=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
+
+ppl1=[0,0,0,0,0,0,0,0,0,0,0,0]
+ppl2=[0,0,0,0,0,0,0,0,0,0,0,0]
+
+g = Graph()
+
+g.add_vertex("A mano")   #se crean los vertices de las paginas
+g.add_vertex("3er tiempo")
+
 
 for post in data1:
-    for likes in post.items()[2]: 
-        lista1.append(likes) #se almacenan las personas que le dan like al post en una lista
-        
+    nombre = str(data1.index(post))  #el nombre del vertice sera su indice
+    if post["created_time"]>date:
+        year1,mes1=int(post["created_time"].split("-")[0]),int(post["created_time"].split("-")[1])
+        year2=year1-year
+        if year2==0:     #aqui se calculan los meses de diferencia entre el post y la fecha de hace un anho
+            meses_dif=mes1-mes
+        if year2==1:
+            meses_dif=mes1+2
+        posts1[meses_dif]+=1   #se suma 1 al nro de posts segun el mes que corresponde
+        g.add_vertex(nombre)        #se crean los vertices y los unen a sus respectivas paginas
+        g.add_edge("A mano",nombre)
+        for likes in post["likes"]: #aca accede directamente a los likes
+
+        for comments in post["comments"]:
+    else:
+        pass
+    
 for post in data2:
-    for likes in post.items()[2]:#lo mismo de arriba
-        lista.append(likes)
+    nombre = str(data2.index(post))   #el nombre del vertice sera su indice
+    if post["created_time"]>date:
+        year1,mes1=int(post["created_time"].split("-")[0]),int(post["created_time"].split("-")[1])
+        year2=year1-year
+        if year2==0:        #aqui se calculan los meses de diferencia entre el post y la fecha de hace un anho
+            meses_dif=mes1-mes
+        if year2==1:
+            meses_dif=mes1+2
+        posts2[meses_dif]+=1   #se suma 1 al nro de posts segun el mes que corresponde
+        g.add_vertex(nombre)   #se crean los vertices y los unen a sus respectivas paginas
+        g.add_edge("3er tiempo",nombre)
+        for likes in post["likes"]:  #aca accede directamente a los likes
+            likes["summary"]
 
-        
+        for comments in post["comments"]:
+    else:
+        pass
 
-print "los likes se esta pagina son",len(lista1)-1#entrega el len de la lisa-1 ya que el ultimo dato es innecesario, lo hago de esta forma porque no se me ocurre otra
-print "los likes de la segunda pagina son",len(lista2)-1
+# por cada post hay un key de ["likes"] y ["comments"]
 
 
 
@@ -41,21 +81,3 @@ print "los likes de la segunda pagina son",len(lista2)-1
 #g.add_vertex(nombre_vertice, tipo=tipo1)
 #g.add_edge(vertice1,vertice2)
 #g.add_edge(vertice1,vertice2,peso=2.5)
-
-
-
-
-
-
-
-
-
-
-#para el grafo    
-#g = Graph()
-#g.add_vertex(nombre_vertice)
-#g.add_vertex(nombre_vertice, tipo=tipo1)
-#g.add_edge(vertice1,vertice2)
-#g.add_edge(vertice1,vertice2,peso=2.5)
-
-
