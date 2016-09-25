@@ -42,6 +42,14 @@ for post in data1:
         g.add_edge("A mano",nombre)
         lkncom1[meses_dif][0]+=int(post["likes"]["sumary"]["total_count"])  #aca accede directamente a los likes y los agrega al contador
         lkncom1[meses_dif][1]+=int(post["comments"]["sumary"]["total_count"])  #aca accede directamente a los comments y los agrega al contador
+        ppl_lk=set()
+        ppl_cmt=set()
+        for likes in post["likes"]["data"]:
+            ppl_lk.add(likes["name"])
+        for comment in post["comments"]["data"]:
+            ppl_cmt.add(comment["name"])
+        ppl1[meses_dif]+=len(ppl_lk&ppl_cmt)
+        
     else:
         pass
     
@@ -59,6 +67,13 @@ for post in data2:
         g.add_edge("3er tiempo",nombre)
         lkncom2[meses_dif][0]+=int(post["likes"]["sumary"]["total_count"])  #aca accede directamente a los likes y los agrega al contador
         lkncom2[meses_dif][1]+=int(post["comments"]["sumary"]["total_count"])  #aca accede directamente a los comments y los agrega al contador
+        ppl_lk=set()
+        ppl_cmt=set()
+        for likes in post["likes"]["data"]:
+            ppl_lk.add(likes["name"])
+        for comment in post["comments"]["data"]:
+            ppl_cmt.add(comment["name"])
+        ppl1[meses_dif]+=len(ppl_lk&ppl_cmt)
     else:
         pass
 
