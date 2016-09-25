@@ -1,10 +1,10 @@
 from json import loads
 from igraph import *
 
-with open('beef house.json') as of: #se abren los archivos .json de ambas paginas
+with open('A mano.json') as of: #se abren los archivos .json de ambas paginas
     data1 = loads(of.readline( ))
 
-with open('fellini.json') as of:
+with open('3er tiempo.json') as of:
     data2 = loads(of.readline( ))
 
 
@@ -16,11 +16,14 @@ posts1=[0,0,0,0,0,0,0,0,0,0,0,0]  #listas que contendran el numero de post al me
 posts2=[0,0,0,0,0,0,0,0,0,0,0,0]   #check
 
 #lista de listas que tendra los datos likes y coments por cada mes
-lkncom1=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
-lkncom2=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
-
+lkncom1=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
+lkncom2=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
+#lista que contiene el numero de personas por mes, que comenan y dan like a otra publicacion
 ppl1=[0,0,0,0,0,0,0,0,0,0,0,0]
 ppl2=[0,0,0,0,0,0,0,0,0,0,0,0]
+#lista que contendra los share por mes de los post de la pagina
+share1=[0,0,0,0,0,0,0,0,0,0,0,0]
+share2=[0,0,0,0,0,0,0,0,0,0,0,0]
 
 g = Graph()
 
@@ -40,42 +43,59 @@ for post in data1:
         posts1[meses_dif]+=1   #se suma 1 al nro de posts segun el mes que corresponde
         g.add_vertex(nombre)        #se crean los vertices y los unen a sus respectivas paginas
         g.add_edge("A mano",nombre)
-        lkncom1[meses_dif][0]+=int(post["likes"]["sumary"]["total_count"])  #aca accede directamente a los likes y los agrega al contador
-        lkncom1[meses_dif][1]+=int(post["comments"]["sumary"]["total_count"])  #aca accede directamente a los comments y los agrega al contador
-        ppl_lk=set()
+	ppl_lk=set()
         ppl_cmt=set()
-        for likes in post["likes"]["data"]:
-            ppl_lk.add(likes["name"])
-        for comment in post["comments"]["data"]:
-            ppl_cmt.add(comment["name"])
+	if "shares" in post.keys():
+	    share1[meses_dif]+=post["shares"]["count"]
+	if "likes" in post.keys():
+	    if "total_count" in post["likes"]["summary"].keys():
+                lkncom1[meses_dif][0]+=int(post["likes"]["summary"]["total_count"])  #aca accede directamente a los likes y los agrega al contador
+	    for likes in post["likes"]["data"]:
+                ppl_lk.add(likes["name"])
+	if "comments" in post.keys():
+	    if "total_count" in post["comments"]["summary"].keys():
+                lkncom1[meses_dif][1]+=int(post["comments"]["summary"]["total_count"])  #aca accede directamente a los comments y los agrega al contador
+	    for comment in post["comments"]["data"]:
+                ppl_cmt.add(comment["from"]["name"])
         ppl1[meses_dif]+=len(ppl_lk&ppl_cmt)
         
     else:
         pass
-    
 for post in data2:
-    nombre = str(data2.index(post))   #el nombre del vertice sera su indice
+    nombre = str(data2.index(post))  #el nombre del vertice sera su indice
     if post["created_time"]>date:
         year1,mes1=int(post["created_time"].split("-")[0]),int(post["created_time"].split("-")[1])
         year2=year1-year
-        if year2==0:        #aqui se calculan los meses de diferencia entre el post y la fecha de hace un anho
+        if year2==0:     #aqui se calculan los meses de diferencia entre el post y la fecha de hace un anho
             meses_dif=mes1-mes
         if year2==1:
             meses_dif=mes1+2
         posts2[meses_dif]+=1   #se suma 1 al nro de posts segun el mes que corresponde
-        g.add_vertex(nombre)   #se crean los vertices y los unen a sus respectivas paginas
-        g.add_edge("3er tiempo",nombre)
-        lkncom2[meses_dif][0]+=int(post["likes"]["sumary"]["total_count"])  #aca accede directamente a los likes y los agrega al contador
-        lkncom2[meses_dif][1]+=int(post["comments"]["sumary"]["total_count"])  #aca accede directamente a los comments y los agrega al contador
-        ppl_lk=set()
+        g.add_vertex(nombre)        #se crean los vertices y los unen a sus respectivas paginas
+        g.add_edge("A mano",nombre)
+	ppl_lk=set()
         ppl_cmt=set()
-        for likes in post["likes"]["data"]:
-            ppl_lk.add(likes["name"])
-        for comment in post["comments"]["data"]:
-            ppl_cmt.add(comment["name"])
-        ppl1[meses_dif]+=len(ppl_lk&ppl_cmt)
+	if "shares" in post.keys():
+	    share2[meses_dif]+=post["shares"]["count"]
+	if "likes" in post.keys():
+	    if "total_count" in post["likes"]["summary"].keys():
+                lkncom2[meses_dif][0]+=int(post["likes"]["summary"]["total_count"])  #aca accede directamente a los likes y los agrega al contador
+	    for likes in post["likes"]["data"]:
+                ppl_lk.add(likes["name"])
+	if "comments" in post.keys():
+	    if "total_count" in post["comments"]["summary"].keys():
+                lkncom2[meses_dif][1]+=int(post["comments"]["summary"]["total_count"])  #aca accede directamente a los comments y los agrega al contador
+	    for comment in post["comments"]["data"]:
+                ppl_cmt.add(comment["from"]["name"])
+        ppl2[meses_dif]+=len(ppl_lk&ppl_cmt)
+        
     else:
         pass
+
+print share1
+print share2
+
+
 
 # por cada post hay un key de ["likes"] y ["comments"]
 
