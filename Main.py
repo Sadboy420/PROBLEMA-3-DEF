@@ -40,9 +40,8 @@ for post in data1:
         posts1[meses_dif]+=1   #se suma 1 al nro de posts segun el mes que corresponde
         g.add_vertex(nombre)        #se crean los vertices y los unen a sus respectivas paginas
         g.add_edge("A mano",nombre)
-        for likes in post["likes"]: #aca accede directamente a los likes
-
-        for comments in post["comments"]:
+        lkncom1[meses_dif][0]+=int(post["likes"]["sumary"]["total_count"])  #aca accede directamente a los likes y los agrega al contador
+        lkncom1[meses_dif][1]+=int(post["comments"]["sumary"]["total_count"])  #aca accede directamente a los comments y los agrega al contador
     else:
         pass
     
@@ -58,10 +57,8 @@ for post in data2:
         posts2[meses_dif]+=1   #se suma 1 al nro de posts segun el mes que corresponde
         g.add_vertex(nombre)   #se crean los vertices y los unen a sus respectivas paginas
         g.add_edge("3er tiempo",nombre)
-        for likes in post["likes"]:  #aca accede directamente a los likes
-            likes["summary"]
-
-        for comments in post["comments"]:
+        lkncom2[meses_dif][0]+=int(post["likes"]["sumary"]["total_count"])  #aca accede directamente a los likes y los agrega al contador
+        lkncom2[meses_dif][1]+=int(post["comments"]["sumary"]["total_count"])  #aca accede directamente a los comments y los agrega al contador
     else:
         pass
 
