@@ -1,4 +1,4 @@
-from tkFileDialog import *
+from tkFileDialog import *    #Diego Troncoso, Gabriel Gonzalez, Gonzalo Oberreuter
 from Tkinter import *
 from json import loads
 from igraph import *
@@ -54,7 +54,7 @@ def estadistica(nombre1,nombre2):
     bst_post1=dict() #se crean diccionarios de las distintas paginas
     bst_post2=dict() 
 
-    for num in range(12):
+    for num in range(12):   #aqui se agregan los vertices por mes a cada pagina de facebook
 	uno.add_vertex(str(num),color="green")
 	uno.add_edge(str(num),nombre1,color="green",size=10)
 	dos.add_vertex(str(num))
@@ -164,7 +164,7 @@ def estadistica(nombre1,nombre2):
             pass
     best1=[0,"",""]
     best2=[0,"",""]
-    for ident,lista in bst_post1.items():
+    for ident,lista in bst_post1.items():    #aqui a partir del diccionario de posts y sus likes, se obtienen los posts con mas likes en el año
         if lista[0]>best1[0]:
 	    best1[0]=lista[0]
 	    best1[1]=lista[1]
@@ -174,7 +174,7 @@ def estadistica(nombre1,nombre2):
 	    best2[0]=lista[0]
 	    best2[1]=lista[1]
 	    best2[2]=lista[2]
-    cinco.add_vertex("post1",color="yellow")
+    cinco.add_vertex("post1",color="yellow")   # se crea el grafo de la metrica 5, que en realidad solo resalta el tamaño del numero de likes de los mejores posts por año
     cinco.add_vertex("post2",color="yellow")
     cinco.add_edge("post1",nombre1,size=int(best1[0]))
     cinco.add_edge("post2",nombre2,size=int(best2[0]))
@@ -185,8 +185,20 @@ def estadistica(nombre1,nombre2):
     cinco.write_gml("cinco.gml")
     return posts1,posts2,lkncom1,lkncom2,ppl1,ppl2,share1,share2,best1,best2,uno,dos,tre,cuatro,cinco
     # por cada post hay un key de ["likes"] y ["comments"]
+def ver(grafo):
+    plot(grafo)
+def ventana2(lista):    #crea una nueva ventana con los mejores posts del año, junto con sus respectivos likes al final
+    mejor_post= Tk()
+    mejor_post.geometry("800x800")
+    display=""
+    for letra in lista[2]:
+        if ((lista[2].index(letra))%40)==0:
+	    display+="\n"
+        display+=letra
+    texto = Label(mejor_post,text=display).pack()
+    mg = Label(mejor_post,text=str(lista[0])).pack()
 
-def Cargar_archivo():
+def Cargar_archivo():    # cada vez que se carga un archivo .json, rellena la tabla de datos con los respectivos datos que corresponden por mes y segun metrica
     global posts1,posts2,lkncom1,lkncom2,ppl1,ppl2,share1,share2,best1,best2,uno,dos,tre,cuatro,cinco
     archivo1= askopenfilename()
     archivo2= askopenfilename()
@@ -200,11 +212,15 @@ def Cargar_archivo():
 	label = Label(ventana, text=ppl2[x]).grid(row=8,column=x+2)
 	label = Label(ventana, text=share1[x]).grid(row=9,column=x+2)
 	label = Label(ventana, text=share2[x]).grid(row=10,column=x+2)
-    plot1= Button(ventana,text="Grafo 1", command=plot(uno)).grid(row=11,column=5)
-    plot2= Button(ventana,text="Grafo 2", command=plot(dos)).grid(row=11,column=6)
-    plot3= Button(ventana,text="Grafo 3", command=plot(tre)).grid(row=11,column=7)
-    plot4= Button(ventana,text="Grafo 4", command=plot(cuatro)).grid(row=11,column=8)
-    plot5= Button(ventana,text="Grafo 5", command=plot(cinco)).grid(row=11,column=9)
+    mejor1= Button(ventana,text="Mejor post 1", command=ventana2(best1)).grid(row=12,column=5)
+    mejor2= Button(ventana,text="Mejor post 2", command=ventana2(best2)).grid(row=12,column=6)
+
+    plt1= Button(ventana,text="Grafo 1", command=ver(uno)).grid(row=11,column=5)
+    plt2= Button(ventana,text="Grafo 2", command=ver(dos)).grid(row=11,column=6)
+    plt3= Button(ventana,text="Grafo 3", command=ver(tre)).grid(row=11,column=7)
+    plt4= Button(ventana,text="Grafo 4", command=ver(cuatro)).grid(row=11,column=8)
+    plt5= Button(ventana,text="Grafo 5", command=ver(cinco)).grid(row=11,column=9)
+    
 
     #bst1= Label(ventana, text=best1[2]).pack()
     #bst2= Label(ventana, text=best2[2]).pack()
@@ -215,7 +231,7 @@ ventana.geometry("1000x800")
 cargar = Button(ventana,text="Cargar", command=Cargar_archivo).grid(row=1,column=6)
 
 
-blank = Label(ventana, text="      ").grid(row=2,column=1)
+blank = Label(ventana, text="      ").grid(row=2,column=1)   # estas son todas las labels que ayudan a identificar los datos en la tabla de datos 
 mes1 = Label(ventana, text="Enero ").grid(row=2,column=2)
 mes2 = Label(ventana, text="Febrero ").grid(row=2,column=3)
 mes3 = Label(ventana, text="Marzo ").grid(row=2,column=4)
